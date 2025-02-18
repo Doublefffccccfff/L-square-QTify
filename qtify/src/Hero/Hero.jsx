@@ -1,6 +1,7 @@
 import React from "react";
 import styles from "./Hero.module.css";
 import AlbumCard from "../albumCard/Card";
+import Section from "../Section/Section";
 
 function Hero() {
   return (
@@ -19,7 +20,11 @@ function Hero() {
       </div>
       
     </div>
-    
+    <div >
+      <Section title={'Top Albums'} loc={'top'}/>
+      <Section title={'New Albums'} loc={'new'}/>
+    </div>
+     
     </>
     
   );

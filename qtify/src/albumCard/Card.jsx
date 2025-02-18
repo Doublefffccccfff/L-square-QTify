@@ -45,7 +45,7 @@ export default function AlbumCard({image,title,follows}) {
             position: 'absolute', 
             left: '8px',         
             padding: "4px 8px",
-            width: '71px',
+            
             height: '23px',
             borderRadius: '10px',
             backgroundColor: '#121212',
@@ -70,7 +70,7 @@ export default function AlbumCard({image,title,follows}) {
             fontSize: '14px',
             lineHeight: '21px',
             letterSpacing: '0px',
-            width: '105px',
+            
             height: '21px', 
             whiteSpace: 'nowrap',    
             overflow: 'hidden',       
