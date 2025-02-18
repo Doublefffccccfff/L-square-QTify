@@ -1,8 +1,10 @@
 import React from "react";
 import styles from "./Hero.module.css";
+import AlbumCard from "../albumCard/Card";
 
 function Hero() {
   return (
+    <>
     <div className={styles.hero}>
       <div>
         <h1>100 Thousand Songs, ad-free</h1>
@@ -15,7 +17,11 @@ function Hero() {
           alt="headphones"
         />
       </div>
+      
     </div>
+    
+    </>
+    
   );
 }
 
