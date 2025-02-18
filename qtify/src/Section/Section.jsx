@@ -61,7 +61,11 @@ export default function Section({title}) {
         
         
          
-          <Box sx={{ position: 'relative' }}>
+          <Box sx={{ 
+                position: 'relative',
+                paddingLeft: 6,   
+                paddingRight: 6,  
+            }}>
             <Grid container spacing={2}>
               {data.map((album) => (
                 <Grid item key={album.id}>

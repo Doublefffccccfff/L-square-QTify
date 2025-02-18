@@ -71,7 +71,10 @@ export default function AlbumCard({image,title,follows}) {
             lineHeight: '21px',
             letterSpacing: '0px',
             width: '105px',
-            height: '21px'
+            height: '21px', 
+            whiteSpace: 'nowrap',    
+            overflow: 'hidden',       
+            textOverflow: 'ellipsis'
           }}
         >
           {title}
