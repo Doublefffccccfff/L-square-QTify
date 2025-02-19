@@ -23,6 +23,7 @@ function Hero() {
     <div >
       <Section title={'Top Albums'} loc={'top'}/>
       <Section title={'New Albums'} loc={'new'}/>
+      <Section title={'Songs'} forAllsongs={true}/>
     </div>
      
     </>

@@ -8,7 +8,10 @@ import {
   Typography 
 } from '@mui/material';
 
-export default function AlbumCard({image,title,follows}) {
+export default function AlbumCard({image,title,follows,forAllsongs}) {
+  
+  
+  
   return (
     <Card sx={{
       width: '159px',
@@ -28,7 +31,7 @@ export default function AlbumCard({image,title,follows}) {
         sx={{ width: '100%', height: '170px', objectFit: 'cover' }}
       />
 
-      {/* Chip Section */}
+      
       <CardContent sx={{ backgroundColor: '#FFFFFF',
             color: '#121212',
             display: 'flex', 
@@ -39,7 +42,7 @@ export default function AlbumCard({image,title,follows}) {
             position: 'relative'
             }}>
         <Chip 
-          label={`${follows} Follows`}
+          label={`${follows} ${forAllsongs ? "Likes" : "Follows"}`}
           variant="outlined"
           sx={{
             position: 'absolute', 
@@ -57,13 +60,13 @@ export default function AlbumCard({image,title,follows}) {
         />
       </CardContent>
 
-      {/* Album Title Section */}
+      
       <Typography 
           
           sx={{
             textAlign: 'left',
             color: '#ffffff',
-            fontWeight: 400, // Updated from 'bold' to 400
+            fontWeight: 400, 
             paddingBottom: '8px',
             backgroundColor: '#121212',
             fontFamily: 'Poppins, sans-serif',

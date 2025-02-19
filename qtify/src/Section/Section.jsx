@@ -5,15 +5,40 @@ import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import AlbumCard from '../albumCard/Card';
+import Tabs from '@mui/material/Tabs';
+import Tab from '@mui/material/Tab';
 
-export default function Section({ title, loc }) {
+
+
+export default function Section({ title, loc ,forAllsongs}) {
     const [data, setData] = useState([]);
-    const [loading, setLoading] = useState(true);
+    
     const [isSliderView, setIsSliderView] = useState(false);
+    const [genreData,setGenreData]=useState([])
+    const [value, setValue] = useState('ALL');
+    const [filteredData, setFilteredData] = useState([]);
 
+
+    const handleChange = (event, newValue) => {
+        setValue(newValue);  
+        console.log(filteredData);
+    
+        if (newValue === "ALL") {
+            setFilteredData(data);  // Show all albums
+            console.log("Filtered Data (All):", data);
+        } else {
+            setFilteredData(data.filter(album => album.genre.key === newValue));  
+        }
+    };
+    
     const fetchData = async () => {
         try {
-            const response = await axios.get(`https://qtify-backend-labs.crio.do/albums/${loc}`);
+            let url = forAllsongs 
+                ? "https://qtify-backend-labs.crio.do/songs"  // Fetch all songs if forAllsongs is true
+                : `https://qtify-backend-labs.crio.do/albums/${loc}`; // Fetch specific album if false
+    
+            const response = await axios.get(url);
+
             return response.data;
         } catch (error) {
             console.error('Error fetching data:', error.message);
@@ -21,17 +46,48 @@ export default function Section({ title, loc }) {
         }
     };
 
+    const fetchGenre = async () => {
+        try {
+            const response = await axios.get(`https://qtify-backend-labs.crio.do/genres`);
+            
+            return response.data;
+        } catch (error) {
+            console.error('Error fetching genre:', error.message);
+            return null;
+        }
+    };
+
+
     useEffect(() => {
         const onHandler = async () => {
             const albumData = await fetchData();
             if (albumData) {
                 setData(albumData);
-                setLoading(false);
+                
             }
+
+            const genreDatafromapi = await fetchGenre()
+            if(genreData){
+                setGenreData(genreDatafromapi.data)
+                
+            }
+            
+            
         };
         onHandler();
-    }, [loc]);
+        
+        
+        
+    }, []);
 
+
+    useEffect(() => {
+        if (forAllsongs) {  // Only filter when forAllsongs is true
+            setFilteredData(data); // Initialize filteredData with all data
+            console.log("Data in the useEffect",data)
+        }
+    }, [data, forAllsongs]);
+    
     const sliderSettings = {
         dots: false,
         infinite: true,
@@ -39,14 +95,14 @@ export default function Section({ title, loc }) {
         arrows: true,
         responsive: [
             {
-                breakpoint: 3000, // xl and above
+                breakpoint: 3000, 
                 settings: {
                     slidesToShow: 7,
                     slidesToScroll: 7
                 }
             },
             {
-                breakpoint: 1200, // lg
+                breakpoint: 1200, 
                 settings: {
                     slidesToShow: 6,
                     slidesToScroll: 6
@@ -91,43 +147,72 @@ export default function Section({ title, loc }) {
                         fontSize: { xs: '1.2rem', sm: '1.4rem', md: '1.5rem' }
                     }}
                 >
-                    {title}
+                     {forAllsongs?'Songs':title}   
                 </Typography>
-                <Button
+                {!forAllsongs?(
+                    <Button
                     onClick={() => setIsSliderView(!isSliderView)}
                     sx={{ 
-                        color: '#FFFFFF',
+                        color: '#34C94B',
                         fontSize: { xs: '0.8rem', sm: '0.9rem', md: '1rem' }
                     }}
                 >
                     {!isSliderView ? 'Show All' : 'Collapse'}
                 </Button>
+                )
+                :null}
+                
             </Box>
+            {forAllsongs && (
+                <Tabs
+                    value={value}
+                    onChange={handleChange}
+                    textColor="inherit"  
+                    indicatorColor="secondary"  
+                    
+                    sx={{
+                        "& .MuiTab-root": { color: "white" }, // Default color for all tabs
+                        
+                        "& .MuiTabs-indicator": { backgroundColor: "green" }, // Indicator color
+                        mb:4,
+                        mt:-2
+
+                    }}
+                >
+                    <Tab key="ALL" value="ALL" label="ALL"/>
+                    {genreData.map((genre) => (
+                    <Tab key={genre.key} value={genre.key} label={genre.label} />
+                    ))}
+                </Tabs>
+            )}
+
+
 
             <Box sx={{
                 paddingX: { xs: 2, sm: 4, md: 6 }
             }}>
                 {!isSliderView ? (
-                    <Slider {...sliderSettings} sx={{ mb: '40px' }}>
-                        {data.map((album) => (
-                            <Box 
-                                key={album.id} 
-                                sx={{ px: { xs: 1, sm: 1.5, md: 2 } }}
-                            >
-                                <AlbumCard 
-                                    title={album.title} 
-                                    image={album.image} 
-                                    follows={album.follows} 
-                                />
-                            </Box>
-                        ))}
-                    </Slider>
+                    <Slider {...sliderSettings} sx={{ mb: "40px" }}>
+                    {(forAllsongs ? filteredData : data).map((album) =>
+                      forAllsongs ? (
+                        <Box key={album.id} sx={{ px: { xs: 1, sm: 1.5, md: 2 } }}>
+                          <AlbumCard title={album.title} image={album.image} follows={album.likes} forAllsongs={true}/>
+                        </Box>
+                      ) : (
+                        
+                        <Box key={album.id} sx={{ px: { xs: 1, sm: 1.5, md: 2 } }}>
+                        <AlbumCard title={album.title} image={album.image} follows={album.follows} />
+                      </Box>
+                      )
+                    )}
+                  </Slider>
+                  
                 ) : (
                     <Grid 
                         container 
                         spacing={{ xs: 1, sm: 2, md: 2 }}
                     >
-                        {data.map((album) => (
+                        {(forAllsongs ? filteredData : data).map((album) => (
                             <Grid 
                                 item 
                                 key={album.id}
